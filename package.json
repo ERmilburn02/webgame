@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-release": "cd Client && webpack --mode=production && cd ../Server && tsc && cd ..",
+    "build-dev": "cd Client && webpack --mode=development && cd ../Server && tsc --sourcemap && cd ..",
+    "start-dev": "npm run build-dev && cd dist && node index.js && cd .."
   },
   "repository": {
     "type": "git",
