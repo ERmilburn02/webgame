@@ -3,6 +3,7 @@ import socketio from "socket.io-client";
 let io = socketio(window.location.host, {reconnection: false, autoConnect: false});
 
 import Vec2 from "./Vec2";
+import Utils from "./Utils"
 
 let CLIENT_OPTS = {
     "debug": false,
@@ -17,6 +18,14 @@ const canvas: HTMLCanvasElement = document.getElementById("game") as HTMLCanvasE
 // canvas.width = 640;
 // canvas.height = 480;
 const context: CanvasRenderingContext2D = canvas.getContext("2d");
+
+canvas.addEventListener("mousemove", (e: MouseEvent) => {
+    CLIENT_DATA.mousePos = Utils.getRelativeMousePosition(e, canvas);
+});
+
+canvas.addEventListener("click", (e: MouseEvent) => {
+    console.log(CLIENT_DATA.mousePos);
+});
 
 // Called every frame
 function update(timestamp: number): void {
