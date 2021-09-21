@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-release": "cd Client && webpack --mode=production && cd ../Server && tsc && cd ..",
-    "build-dev": "cd Client && webpack --mode=development && cd ../Server && tsc --sourcemap && cd ..",
-    "start-dev": "npm run build-dev && cd dist && node index.js && cd .."
+    "build-release": "npm run copyAssets && cd Client && webpack --mode=production && cd ../Server && tsc && cd ..",
+    "build-dev": "npm run copyAssets && cd Client && webpack --mode=development && cd ../Server && tsc --sourcemap && cd ..",
+    "start-dev": "npm run build-dev && cd dist && node index.js && cd ..",
+    "copyAssets": "node Utils/copyAssets.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/ERmilburn02/webgame#readme",
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "fs-extra": "^10.0.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.3",
     "webpack": "^5.53.0",
