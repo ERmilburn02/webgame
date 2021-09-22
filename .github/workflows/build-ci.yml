@@ -2,7 +2,7 @@ name: Webgame Build Release CI
 on: 
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: Install and Build
         run: |
           npm ci
-          npm run build-release
+          npm run build-dev
         env:
           CI: true
 
