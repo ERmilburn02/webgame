@@ -1,0 +1,45 @@
+name: Webgame Build Release CI
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: 'true'
+        
+      - name: Install Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build-release
+        env:
+          CI: true
+
+      - name: Zip
+        run: |
+          cd dist
+          zip ../dist.zip * -r
+
+      - name: Tag
+        run: |
+          git tag --force continuous ${{github.sha}}
+          git push --tags --force
+      
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "dist.zip"
+          body: >
+            This is an automated build of the source code.
+          tag: continous
