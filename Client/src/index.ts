@@ -80,9 +80,9 @@ async function start(): Promise<void> {
     // Load images
     // TODO: Dynamically load all images
     await Utils.loadImage("/img/player.png").then((img: HTMLImageElement) => {IMAGES.player = img;});
-    await Utils.loadImage("/img/fields/fields-background.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img;});
-    await Utils.loadImage("/img/fields/fields-foreground.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img;});
-    await Utils.loadImage("/img/fields/fields-walkmesh.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img;});
+    await Utils.loadImage("/img/fields/background.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img;});
+    await Utils.loadImage("/img/fields/foreground.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img;});
+    await Utils.loadImage("/img/fields/walkmesh.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img;});
     //#endregion
 
     // Connect to the server
