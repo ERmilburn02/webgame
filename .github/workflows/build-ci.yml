@@ -42,4 +42,4 @@ jobs:
           artifacts: "dist.zip"
           body: >
             This is an automated build of the source code.
-          tag: continous
+          tag: continuous
