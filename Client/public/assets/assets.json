@@ -1,0 +1,8 @@
+{
+    "images": {
+        "levels_fields_background": "/assets/img/levels/fields/background.png",
+        "levels_fields_foreground": "/assets/img/levels/fields/foreground.png",
+        "levels_fields_walkmesh": "/assets/img/levels/fields/walkmesh.png",
+        "default_player": "/assets/img/player.png"
+    }
+}

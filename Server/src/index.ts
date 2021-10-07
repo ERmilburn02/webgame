@@ -3,12 +3,29 @@ import socketio from "socket.io";
 import http from "http";
 import Player from "./Player";
 import Vec2 from "./Vec2";
+import bodyParser from "body-parser";
+import {spawn} from "child_process";
 
 let app = express();
 let serv = http.createServer(app);
 let io = new socketio.Server(serv, {});
 
 app.use("/", express.static(__dirname + "/client"));
+
+//#region Auto-Update Webhook
+const USE_AUTO_UPDATE: boolean = false;
+
+app.use(bodyParser.json());
+app.post("/gitUpdateHook", (req, res) => {
+    res.status(200).send("OK");
+    console.log("Git Update Hook");
+    if (USE_AUTO_UPDATE) {
+        console.log("Auto-Update");
+        spawn("npm", ["run", "update"], {detached: true, stdio: "ignore"});
+        process.exit(0);
+    }
+});
+//#endregion
 
 let SOCKET_LIST = {};
 let PLAYER_LIST = {};

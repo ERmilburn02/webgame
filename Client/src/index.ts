@@ -77,13 +77,21 @@ async function start(): Promise<void> {
 
     // Load resources
     //#region Load resources
+    let assetJson: any = await (await fetch("/assets/assets.json")).json();
+    
+    let count: number = 4;
     // Load images
-    // TODO: Dynamically load all images
-    await Utils.loadImage("/img/player.png").then((img: HTMLImageElement) => {IMAGES.player = img;});
-    await Utils.loadImage("/img/fields/background.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img;});
-    await Utils.loadImage("/img/fields/foreground.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img;});
-    await Utils.loadImage("/img/fields/walkmesh.png").then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img;});
+    Utils.loadImage(assetJson.images.default_player).then((img: HTMLImageElement) => {IMAGES.player = img; count--; finishLoadImages(count);});
+    Utils.loadImage(assetJson.images.levels_fields_background).then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img; count--; finishLoadImages(count);});
+    Utils.loadImage(assetJson.images.levels_fields_foreground).then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img; count--; finishLoadImages(count);});
+    Utils.loadImage(assetJson.images.levels_fields_walkmesh).then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img; count--; finishLoadImages(count);});
     //#endregion
+};
+
+function finishLoadImages(count: number):void {
+    if (count > 0) {
+        return;
+    }
 
     // Connect to the server
     io.connect();
@@ -92,6 +100,6 @@ async function start(): Promise<void> {
 
     // Start the update loop.
     requestAnimationFrame(update);
-};
+}
 
 start();
