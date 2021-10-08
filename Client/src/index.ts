@@ -2,7 +2,8 @@ import socketio from "socket.io-client";
 let io = socketio(window.location.host, {reconnection: false, autoConnect: false});
 
 import Vec2 from "./Vec2";
-import Utils from "./Utils"
+import Utils from "./Utils";
+import Player from "./Player";
 
 let CLIENT_OPTS = {
     "debug": false,
@@ -11,7 +12,6 @@ let CLIENT_OPTS = {
 let CLIENT_DATA = {
     "mousePos": Vec2.zero(),
     "lastUpdate": 0,
-    "playerPos": Vec2.zero(),
 };
 
 let IMAGES = {
@@ -24,6 +24,8 @@ let IMAGES = {
     },
     "player": new Image(),
 };
+
+let PLAYER_LIST: Player[] = [];
 
 const canvas: HTMLCanvasElement = document.getElementById("game") as HTMLCanvasElement;
 // canvas.width = 640;
@@ -38,8 +40,13 @@ canvas.addEventListener("click", (e: MouseEvent) => {
     io.emit("posUpdate", CLIENT_DATA.mousePos);
 });
 
-io.on("posUpdate", (data: Vec2) => {
-    CLIENT_DATA.playerPos = data;
+io.on("update", (data: any[]) => {
+    let a: Player[] = [];
+    data.forEach(d => {
+        let p = new Player(d.id, d.pos, d.name);
+        a.push(p);
+    });
+    PLAYER_LIST = a;
 });
 
 // Called every frame
@@ -53,8 +60,10 @@ function update(timestamp: number): void {
     context.clearRect(0, 0, canvas.width, canvas.height);
     // Draw the background
     context.drawImage(IMAGES.levels.fields.background, 0, 0);
-    // Draw the player
-    context.drawImage(IMAGES.player, CLIENT_DATA.playerPos.x - IMAGES.player.width / 2, CLIENT_DATA.playerPos.y - IMAGES.player.height / 2);
+    // Draw the players
+    PLAYER_LIST.forEach(player => {
+        context.drawImage(IMAGES.player, player.pos.x - IMAGES.player.width / 2, player.pos.y - IMAGES.player.height / 2);
+    });
     // Draw the foreground
     context.drawImage(IMAGES.levels.fields.foreground, 0, 0);
     //#endregion
@@ -95,7 +104,6 @@ function finishLoadImages(count: number):void {
 
     // Connect to the server
     io.connect();
-    CLIENT_DATA.playerPos = new Vec2(canvas.width / 2, canvas.height / 2);
     io.emit("posUpdate", new Vec2(canvas.width / 2, canvas.height / 2));
 
     // Start the update loop.

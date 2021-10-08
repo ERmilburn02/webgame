@@ -11,4 +11,12 @@ export default class Player {
         this.pos = _pos;
         this.name = _name;
     }
+
+    public getUpdatePack() {
+        return {
+            id: this.socket.id,
+            pos: this.pos,
+            name: this.name
+        };
+    }
 }
