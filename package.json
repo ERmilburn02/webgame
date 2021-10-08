@@ -8,7 +8,9 @@
     "build-release": "npm run copyAssets && cd Client && webpack --mode=production && cd ../Server && tsc && cd ..",
     "build-dev": "npm run copyAssets && cd Client && webpack --mode=development && cd ../Server && tsc --sourcemap && cd ..",
     "start-dev": "npm run build-dev && cd dist && node index.js && cd ..",
-    "copyAssets": "node Utils/copyAssets.js"
+    "copyAssets": "node Utils/copyAssets.js",
+    "build": "npm run build-release",
+    "start": "cd dist && node index.js && cd .."
   },
   "repository": {
     "type": "git",
