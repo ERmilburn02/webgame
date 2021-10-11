@@ -8,6 +8,8 @@ let app = express();
 let serv = http.createServer(app);
 let io = new socketio.Server(serv, {});
 
+let PORT = process.env.PORT || 2000;
+
 app.use("/", express.static(__dirname + "/client"));
 
 let SOCKET_LIST = {};
@@ -37,9 +39,9 @@ setInterval(() => {
         pack.push(PLAYER_LIST[i].getUpdatePack());
     }
     for (let i in SOCKET_LIST) {
-        SOCKET_LIST[i].emit("update", pack);
+        SOCKET_LIST[i].emit("update", {pos: pack});
     }
 }, 1000 / 60);
 
-serv.listen(process.env.PORT || 2000);
+serv.listen(PORT);
 console.log(`Server started`);

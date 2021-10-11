@@ -4,6 +4,7 @@ let io = socketio(window.location.host, {reconnection: false, autoConnect: false
 import Vec2 from "./Vec2";
 import Utils from "./Utils";
 import Player from "./Player";
+import drawAssetDownloadScreen from "./drawables/drawAssetDownloadScreen";
 
 let CLIENT_OPTS = {
     "debug": false,
@@ -40,9 +41,11 @@ canvas.addEventListener("click", (e: MouseEvent) => {
     io.emit("posUpdate", CLIENT_DATA.mousePos);
 });
 
-io.on("update", (data: any[]) => {
+// Update packet is sent to the client 60 times a second.
+io.on("update", (data: any) => {
+    let pos: any[] = data.pos;
     let a: Player[] = [];
-    data.forEach(d => {
+    pos.forEach(d => {
         let p = new Player(d.id, d.pos, d.name);
         a.push(p);
     });
@@ -88,17 +91,20 @@ async function start(): Promise<void> {
     //#region Load resources
     let assetJson: any = await (await fetch("/assets/assets.json")).json();
     
-    let count: number = 4;
+    let totalCount = 4;
+    let count = totalCount;
     // Load images
-    Utils.loadImage(assetJson.images.default_player).then((img: HTMLImageElement) => {IMAGES.player = img; count--; finishLoadImages(count);});
-    Utils.loadImage(assetJson.images.levels_fields_background).then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img; count--; finishLoadImages(count);});
-    Utils.loadImage(assetJson.images.levels_fields_foreground).then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img; count--; finishLoadImages(count);});
-    Utils.loadImage(assetJson.images.levels_fields_walkmesh).then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img; count--; finishLoadImages(count);});
+    drawAssetDownloadScreen(canvas, context, count, totalCount);
+    Utils.loadImage(assetJson.images.default_player).then((img: HTMLImageElement) => {IMAGES.player = img; count--; finishLoadImages(count, totalCount);});
+    Utils.loadImage(assetJson.images.levels_fields_background).then((img: HTMLImageElement) => {IMAGES.levels.fields.background = img; count--; finishLoadImages(count, totalCount);});
+    Utils.loadImage(assetJson.images.levels_fields_foreground).then((img: HTMLImageElement) => {IMAGES.levels.fields.foreground = img; count--; finishLoadImages(count, totalCount);});
+    Utils.loadImage(assetJson.images.levels_fields_walkmesh).then((img: HTMLImageElement) => {IMAGES.levels.fields.walkmesh = img; count--; finishLoadImages(count, totalCount);});
     //#endregion
 };
 
-function finishLoadImages(count: number):void {
+function finishLoadImages(count: number, totalCount: number):void {
     if (count > 0) {
+        drawAssetDownloadScreen(canvas, context, count, totalCount);
         return;
     }
 
