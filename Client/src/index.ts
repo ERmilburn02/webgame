@@ -5,6 +5,7 @@ import Vec2 from "./Vec2";
 import Utils from "./Utils";
 import Player from "./Player";
 import drawAssetDownloadScreen from "./drawables/drawAssetDownloadScreen";
+import drawErrorScreen from "./drawables/drawErrorScreen";
 
 let CLIENT_OPTS = {
     "debug": false,
@@ -13,6 +14,9 @@ let CLIENT_OPTS = {
 let CLIENT_DATA = {
     "mousePos": Vec2.zero(),
     "lastUpdate": 0,
+    "errorMsg": "",
+    "hasError": false,
+    "errorAllowReconnection": false,
 };
 
 let IMAGES = {
@@ -52,6 +56,13 @@ io.on("update", (data: any) => {
     PLAYER_LIST = a;
 });
 
+io.on("disconnect", (disconnectReason) => {
+    if (disconnectReason !== "io client disconnect") {
+        CLIENT_DATA.hasError = true;
+        CLIENT_DATA.errorMsg = "Lost connection to server.";
+    }
+});
+
 // Called every frame
 function update(timestamp: number): void {
     // delta is the time to render, in ms. Target is 1000 / refresh rate.
@@ -69,6 +80,10 @@ function update(timestamp: number): void {
     });
     // Draw the foreground
     context.drawImage(IMAGES.levels.fields.foreground, 0, 0);
+
+    if (CLIENT_DATA.hasError) {
+        drawErrorScreen(canvas, context, CLIENT_DATA.errorMsg, CLIENT_DATA.errorAllowReconnection);
+    }
     //#endregion
 
     // Call requestAnimationFrame to queue the next update.
