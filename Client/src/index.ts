@@ -1,5 +1,12 @@
+declare global {
+    interface Window {
+        io: any;
+    }
+}
+
 import socketio from "socket.io-client";
 let io = socketio(window.location.host, {reconnection: false, autoConnect: false});
+window.io = io;
 
 import Vec2 from "./Vec2";
 import Utils from "./Utils";
@@ -47,19 +54,16 @@ canvas.addEventListener("click", (e: MouseEvent) => {
 
 // Update packet is sent to the client 60 times a second.
 io.on("update", (data: any) => {
-    let pos: any[] = data.pos;
-    let a: Player[] = [];
-    pos.forEach(d => {
-        let p = new Player(d.id, d.pos, d.name);
-        a.push(p);
-    });
-    PLAYER_LIST = a;
+    PLAYER_LIST = data.pos as Player[];
 });
 
 io.on("disconnect", (disconnectReason) => {
-    if (disconnectReason !== "io client disconnect") {
+    if (disconnectReason === "io client disconnect") {
         CLIENT_DATA.hasError = true;
-        CLIENT_DATA.errorMsg = "Lost connection to server.";
+        CLIENT_DATA.errorMsg = "Disconnected";
+    } else {
+        CLIENT_DATA.hasError = true;
+        CLIENT_DATA.errorMsg = "Connection lost";
     }
 });
 
