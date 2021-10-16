@@ -7,6 +7,7 @@ export default class Player {
   "name": string;
   "currentMessage": string;
   "lastMessageTime": number;
+  "isDeveloper": boolean;
 
   constructor(_socket: socketio.Socket, _pos: Vec2, _name: string) {
     this.socket = _socket;
@@ -14,6 +15,7 @@ export default class Player {
     this.name = _name;
     this.currentMessage = "";
     this.lastMessageTime = 0;
+    this.isDeveloper = false;
   }
 
   public getUpdatePack() {
@@ -25,6 +27,7 @@ export default class Player {
       pos: this.pos,
       name: this.name,
       currentMessage: this.currentMessage,
+      isDeveloper: this.isDeveloper,
     };
   }
 }

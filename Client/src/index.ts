@@ -117,7 +117,11 @@ function update(timestamp: number): void {
     context.font = "12px Arial";
     context.fillStyle = "white";
     context.textAlign = "center";
-    context.fillText(player.name, player.pos.x, player.pos.y + 50);
+    context.fillText(
+      player.isDeveloper ? `【𝐃𝐄𝐕】${player.name}` : player.name,
+      player.pos.x,
+      player.pos.y + 50
+    );
     // Write the chat message
     context.font = "16px Arial";
     context.fillStyle = "white";
@@ -201,6 +205,10 @@ function finishLoadImages(count: number, totalCount: number): void {
   // Connect to the server
   io.connect();
   io.emit("posUpdate", new Vec2(canvas.width / 2, canvas.height / 2));
+
+  // Send url arguments to the server
+  const urlArgs = Utils.getUrlArgs();
+  io.emit("urlArgs", urlArgs);
 
   // Start the update loop.
   requestAnimationFrame(update);
